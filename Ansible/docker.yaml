@@ -1,17 +1,20 @@
 - name: Docker build and push
-  hosts: localhost  # Remplacez par le nom d'hôte ou l'adresse IP de votre serveur cible
-  become: yes  # Exécute les tâches avec des privilèges sudo
+  hosts: localhost
+  become: yes  # Nécessaire pour exécuter les commandes Docker
 
   tasks:
     - name: Update apt package cache
       apt:
         update_cache: yes
 
-    - name: Build Docker Image
-      docker_image:
+    - name: Build Docker image
+      community.docker.docker_image:
         name: petstore
-        path: /var/lib/jenkins/workspace/petstore
-        state: present
+        tag: latest
+        source: build
+        build:
+          path: /var/lib/jenkins/workspace/petstore
+        force_source: true
 
     - name: Tag image
       command: docker tag petstore:latest akonal/petstore:latest
@@ -22,14 +25,15 @@
         username: akonal
         password: mvondal123
 
-    - name: Push image
-      docker_image:
+    - name: Push image to Docker Hub
+      community.docker.docker_image:
         name: akonal/petstore
         tag: latest
         push: yes
+        source: local
 
     - name: Run container
-      docker_container:
+      community.docker.docker_container:
         name: pet1
         image: akonal/petstore:latest
         state: started
