@@ -1,5 +1,5 @@
 - name: Docker build and push
-  hosts: 34.201.73.95  # Remplacez par le nom d'hôte ou l'adresse IP de votre serveur cible
+  hosts: localhost  # Remplacez par le nom d'hôte ou l'adresse IP de votre serveur cible
   become: yes  # Exécute les tâches avec des privilèges sudo
 
   tasks:
